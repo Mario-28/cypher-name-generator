@@ -1,8 +1,8 @@
 {
   "id": "cypher-name-generator",
   "title": "Cypher Name Generator",
-  "description": "A modular name and text generator for the Cypher System. Integrates with Cypher GM Taskbar when available.",
-  "version": "1.1.1",
+  "description": "An extensible name and text generation subsystem for the Cypher System. Supports pluggable providers and optional Cypher GM Taskbar integration.",
+  "version": "1.3.1",
   "type": "module",
   "authors": [{ "name": "Cypher Tools" }],
   "compatibility": {
@@ -10,6 +10,9 @@
     "verified": "14",
     "maximum": "15"
   },
+  "url": "https://github.com/Mario-28/cypher-name-generator",
+  "manifest": "https://raw.githubusercontent.com/Mario-28/cypher-name-generator/main/module.json",
+  "download": "https://github.com/Mario-28/cypher-name-generator/archive/refs/heads/main.zip",
   "relationships": {
     "systems": [
       {
@@ -18,11 +21,12 @@
         "compatibility": { "minimum": "2" }
       }
     ],
-    "requires": [
+    "optional": [
       {
         "id": "cypher-gm-taskbar",
         "type": "module",
-        "compatibility": { "minimum": "3" }
+        "compatibility": { "minimum": "3" },
+        "reason": "Adds a quick-access button to the GM Taskbar for opening the Name Generator."
       }
     ]
   },

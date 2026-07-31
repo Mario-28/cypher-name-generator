@@ -4,6 +4,7 @@
     {{#each tabs}}
       <button class="cng-tab-btn {{#if (eq this.id @root.activeTabId)}}cng-tab-active{{/if}}"
               data-tab-id="{{this.id}}"
+              title="{{this.name}} (right-click to customize)"
               style="--tab-color: {{this.color}}">
         <span class="cng-tab-indicator" style="background:{{this.color}}"></span>
         <i class="fas {{this.icon}}"></i>
@@ -18,7 +19,8 @@
   <!-- Tab Content -->
   <div class="cng-tab-content">
     {{#if activeTab}}
-      <!-- Journal configuration -->
+
+      <!-- Journal Configuration -->
       <div class="cng-config-section">
         <div class="cng-section-header">
           <span class="cng-section-title"><i class="fas fa-link"></i> Connected Journals</span>
@@ -27,9 +29,10 @@
 
         <div class="cng-journals-list">
           {{#each activeTab.journals}}
-            <div class="cng-journal-chip {{#if (eq this.enabled false)}}cng-journal-disabled{{/if}}" data-journal-id="{{this.id}}" data-index="{{@index}}">
+            <div class="cng-journal-chip {{#if (eq this.enabled false)}}cng-journal-disabled{{/if}}"
+                 data-journal-id="{{this.id}}" data-index="{{@index}}">
               <span class="cng-journal-order">{{add @index 1}}</span>
-              <button class="cng-journal-eye" data-index="{{@index}}" title="Toggle visibility">
+              <button class="cng-journal-eye" data-index="{{@index}}" title="Toggle">
                 {{#if (eq this.enabled false)}}
                   <i class="fas fa-eye-slash"></i>
                 {{else}}
@@ -37,24 +40,26 @@
                 {{/if}}
               </button>
               <span class="cng-journal-name">{{journalName this.id}}</span>
-              <button class="cng-journal-remove" data-index="{{@index}}" title="Remove"><i class="fas fa-times"></i></button>
+              <button class="cng-journal-remove" data-index="{{@index}}" title="Remove">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
           {{else}}
-            <div class="cng-journals-empty">No journals connected. Add journals below.</div>
+            <div class="cng-journals-empty">No journals connected. Add one below.</div>
           {{/each}}
         </div>
 
         {{#if (gt activeTab.journals.length 1)}}
           <div class="cng-order-hint">
             <i class="fas fa-info-circle"></i>
-            Journals are combined left-to-right in the order shown above.
+            Journals combine left-to-right in the order shown.
           </div>
         {{/if}}
 
-        <!-- Add journal -->
+        <!-- Add Journal Row -->
         <div class="cng-add-journal-row">
           <div class="cng-journal-search-wrap">
-            <input type="text" class="cng-journal-search" placeholder="Search journals..." autocomplete="off">
+            <input type="text" class="cng-journal-search" placeholder="Search journals…" autocomplete="off">
             <div class="cng-journal-dropdown"></div>
             <input type="hidden" class="cng-journal-selected-id">
           </div>
@@ -89,7 +94,7 @@
         {{/if}}
       </div>
 
-      <!-- Tab actions -->
+      <!-- Tab Actions Footer -->
       <div class="cng-tab-actions">
         <span class="cng-hint"><i class="fas fa-mouse"></i> Right-click tab to customize</span>
         {{#if (gt tabs.length 1)}}
@@ -98,7 +103,9 @@
           </button>
         {{/if}}
       </div>
+
     {{else}}
+      <!-- No Tabs State -->
       <div class="cng-no-tabs">
         <i class="fas fa-book-open"></i>
         <p>No tabs configured. Add your first tab to get started.</p>
