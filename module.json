@@ -1,0 +1,38 @@
+{
+  "id": "cypher-name-generator",
+  "title": "Cypher Name Generator",
+  "description": "A modular name and text generator for the Cypher System. Integrates with Cypher GM Taskbar when available.",
+  "version": "1.1.1",
+  "type": "module",
+  "authors": [{ "name": "Cypher Tools" }],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14",
+    "maximum": "15"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "cyphersystem",
+        "type": "system",
+        "compatibility": { "minimum": "2" }
+      }
+    ],
+    "requires": [
+      {
+        "id": "cypher-gm-taskbar",
+        "type": "module",
+        "compatibility": { "minimum": "3" }
+      }
+    ]
+  },
+  "esmodules": ["scripts/module.js"],
+  "styles": ["styles/name-generator.css"],
+  "socket": false,
+  "flags": {
+    "hotReload": {
+      "extensions": ["css", "hbs", "js"],
+      "paths": ["styles", "scripts", "templates"]
+    }
+  }
+}

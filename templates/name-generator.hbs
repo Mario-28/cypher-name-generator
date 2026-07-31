@@ -1,0 +1,111 @@
+<div class="cng-container">
+  <!-- Tabs -->
+  <div class="cng-tabs-bar">
+    {{#each tabs}}
+      <button class="cng-tab-btn {{#if (eq this.id @root.activeTabId)}}cng-tab-active{{/if}}"
+              data-tab-id="{{this.id}}"
+              style="--tab-color: {{this.color}}">
+        <span class="cng-tab-indicator" style="background:{{this.color}}"></span>
+        <i class="fas {{this.icon}}"></i>
+        <span>{{this.name}}</span>
+      </button>
+    {{/each}}
+    <button class="cng-tab-btn cng-tab-add" data-action="addTab" title="Add tab">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="cng-tab-content">
+    {{#if activeTab}}
+      <!-- Journal configuration -->
+      <div class="cng-config-section">
+        <div class="cng-section-header">
+          <span class="cng-section-title"><i class="fas fa-link"></i> Connected Journals</span>
+          <span class="cng-section-sub">In order: {{activeTab.journals.length}}</span>
+        </div>
+
+        <div class="cng-journals-list">
+          {{#each activeTab.journals}}
+            <div class="cng-journal-chip {{#if (eq this.enabled false)}}cng-journal-disabled{{/if}}" data-journal-id="{{this.id}}" data-index="{{@index}}">
+              <span class="cng-journal-order">{{add @index 1}}</span>
+              <button class="cng-journal-eye" data-index="{{@index}}" title="Toggle visibility">
+                {{#if (eq this.enabled false)}}
+                  <i class="fas fa-eye-slash"></i>
+                {{else}}
+                  <i class="fas fa-eye"></i>
+                {{/if}}
+              </button>
+              <span class="cng-journal-name">{{journalName this.id}}</span>
+              <button class="cng-journal-remove" data-index="{{@index}}" title="Remove"><i class="fas fa-times"></i></button>
+            </div>
+          {{else}}
+            <div class="cng-journals-empty">No journals connected. Add journals below.</div>
+          {{/each}}
+        </div>
+
+        {{#if (gt activeTab.journals.length 1)}}
+          <div class="cng-order-hint">
+            <i class="fas fa-info-circle"></i>
+            Journals are combined left-to-right in the order shown above.
+          </div>
+        {{/if}}
+
+        <!-- Add journal -->
+        <div class="cng-add-journal-row">
+          <div class="cng-journal-search-wrap">
+            <input type="text" class="cng-journal-search" placeholder="Search journals..." autocomplete="off">
+            <div class="cng-journal-dropdown"></div>
+            <input type="hidden" class="cng-journal-selected-id">
+          </div>
+          <button class="cng-btn cng-btn-add" data-action="addJournal">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="cng-divider"></div>
+
+      <!-- Generate Section -->
+      <div class="cng-generate-section">
+        <button class="cng-generate-btn" data-action="generate" style="--tab-color: {{activeTab.color}}">
+          <i class="fas fa-dice"></i>
+          <span>GENERATE</span>
+        </button>
+
+        {{#if result}}
+          <div class="cng-result-box">
+            <div class="cng-result-text">{{result}}</div>
+            <div class="cng-result-actions">
+              <button class="cng-copy-btn" data-action="copyResult" title="Copy to clipboard">
+                <i class="fas fa-copy"></i>
+              </button>
+              <button class="cng-npc-btn" data-action="createNPC" title="Create NPC Actor">
+                <i class="fas fa-user-plus"></i> Create NPC
+              </button>
+            </div>
+          </div>
+        {{/if}}
+      </div>
+
+      <!-- Tab actions -->
+      <div class="cng-tab-actions">
+        <span class="cng-hint"><i class="fas fa-mouse"></i> Right-click tab to customize</span>
+        {{#if (gt tabs.length 1)}}
+          <button class="cng-btn-ghost cng-btn-danger" data-action="deleteTab">
+            <i class="fas fa-trash"></i> Delete Tab
+          </button>
+        {{/if}}
+      </div>
+    {{else}}
+      <div class="cng-no-tabs">
+        <i class="fas fa-book-open"></i>
+        <p>No tabs configured. Add your first tab to get started.</p>
+        <button class="cng-btn" data-action="addTab">
+          <i class="fas fa-plus"></i> Add Tab
+        </button>
+      </div>
+    {{/if}}
+  </div>
+</div>
