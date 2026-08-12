@@ -1,5 +1,5 @@
 /**
- * Cypher Name Generator v1.3.1
+ * Cypher Name Generator v1.3.3
  * Foundry VTT v13–v15 | Cypher System
  *
  * Extensible subsystem release:
@@ -829,36 +829,64 @@ class NameGeneratorDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 }
 
+/** Inject Name Generator button into Cypher GM Taskbar SECTION 1 */
 function injectTaskbarButton() {
   const taskbarModule = game.modules.get("cypher-gm-taskbar");
   if (!taskbarModule?.active) return;
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const bar = node.matches?.("#cypher-gm-taskbar-bar") ? node : node.querySelector?.("#cypher-gm-taskbar-bar");
-          if (bar) _addButtonToBar(bar);
-        }
-      }
+  // Try immediate injection first
+  if (_addButtonToSection()) {
+    _patchGMTaskbarRender();
+    return;
+  }
+  // Retry loop: GM Taskbar may not be rendered yet
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+    if (_addButtonToSection()) {
+      clearInterval(timer);
+      _patchGMTaskbarRender();
+      return;
     }
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-  const existingBar = document.querySelector("#cypher-gm-taskbar-bar");
-  if (existingBar) _addButtonToBar(existingBar);
+    if (attempts > 20) { // 5 seconds max
+      clearInterval(timer);
+      console.warn(`${MODULE_ID} | Failed to integrate with GM Taskbar SECTION 1 — not found after 5s`);
+    }
+  }, 250);
 }
-function _addButtonToBar(bar) {
-  if (bar.querySelector(".cng-taskbar-btn")) return;
-  const diffBox = bar.querySelector(".cgm-difficulty-box");
-  if (!diffBox) return;
+
+function _addButtonToSection() {
+  const bar = document.querySelector("#cypher-gm-taskbar-bar");
+  if (!bar) return false;
+  const sectionButtons = bar.querySelector(".cgm-section-buttons");
+  if (!sectionButtons) return false;
+  // Aggressive cleanup: remove ANY non-Cypher-Log buttons (catches old cached buttons)
+  const existing = sectionButtons.querySelectorAll(".cng-section-btn, .cng-taskbar-btn, [data-action=\'openNameGenerator\'], [title=\'Name Generator\'], [title=\'Open Name Generator\']");
+  existing.forEach(el => el.remove());
   const btn = document.createElement("button");
-  btn.className = "cgm-icon-btn cng-taskbar-btn";
+  btn.className = "cgm-section-btn cng-section-btn";
+  btn.type = "button";
   btn.title = "Name Generator";
-  btn.innerHTML = `<i class="fas fa-scroll"></i>`;
+  btn.setAttribute("aria-label", "Name Generator");
+  btn.innerHTML = `<i class="fas fa-signature"></i>`;
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     openNameGenerator();
   });
-  diffBox.after(btn);
+  // Append after Cypher Log (which prepends itself)
+  sectionButtons.append(btn);
+  return true;
+}
+
+/** Patch GM Taskbar render to re-inject button after re-renders */
+function _patchGMTaskbarRender() {
+  const gm = window.cypherGMTaskbar;
+  if (!gm || gm._cngPatched) return;
+  gm._cngPatched = true;
+  const originalRender = gm.render.bind(gm);
+  gm.render = function(...args) {
+    originalRender(...args);
+    requestAnimationFrame(() => _addButtonToSection());
+  };
 }
 
 let _dialogInstance = null;
@@ -947,7 +975,7 @@ function buildPublicApi() {
 }
 
 Hooks.once("init", () => {
-  console.log(`${MODULE_ID} | Initializing Cypher Name Generator v1.3.1`);
+  console.log(`${MODULE_ID} | Initializing Cypher Name Generator v1.3.3`);
   registerSettings();
   registerBuiltInProviders();
   game[MODULE_ID] = buildPublicApi();

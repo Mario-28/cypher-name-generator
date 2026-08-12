@@ -2,7 +2,7 @@
   "id": "cypher-name-generator",
   "title": "Cypher Name Generator",
   "description": "An extensible name and text generation subsystem for the Cypher System. Supports pluggable providers and optional Cypher GM Taskbar integration.",
-  "version": "1.3.1",
+  "version": "1.3.3",
   "type": "module",
   "authors": [{ "name": "Cypher Tools" }],
   "compatibility": {
